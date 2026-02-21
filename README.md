@@ -5,6 +5,27 @@ whichever one you list first in your list of decoders (see usage section) should
 # Compiling
 You have to provide your own copy of Miniaudio, and add the folder containing `miniaudio.h` to your include path.
 
+<details>
+  <summary>CMake instructions</summary>
+  
+  Assuming you already have a `miniaudio` target, add something like this to your CMake file. The `CMakeLists.txt`
+  in this repo provides the `ibxm` and `IT2` targets.
+  ```cmake
+    # Link this for Miniaudio with tracker module support
+    add_subdirectory(lib/ma_trackerFormats)
+    add_library(ma_trackerFormats STATIC
+        lib/ma_trackerFormats/ibxm_reader.c
+        lib/ma_trackerFormats/miniaudio_ibxm.c
+        lib/ma_trackerFormats/miniaudio_it2play.c
+    )
+    target_link_libraries(ma_trackerFormats PUBLIC miniaudio ibxm IT2)
+    target_include_directories(miniaudio PUBLIC lib/ma_trackerFormats lib/ma_trackerFormats/lib/it2play)
+  ```
+</details>
+
+<details>
+  <summary>Non-CMake instructions</summary>
+
 ### `miniaudio_ibxm.c`
 - Compile `miniaudio_ibxm.c`, `ibxm_reader.c`, `lib/micromod/ibxm-ac/ibxm.c`, and your own copy of `miniaudio.c`
   - Requires `lib/micromod/ibxm-ac/` as an include path
@@ -15,6 +36,8 @@ You have to provide your own copy of Miniaudio, and add the folder containing `m
   - `lib/it2_core.c`
   - `lib/it2_wav.c`
   - `lib/it2_hq.c`
+
+</details>
 
 # Usage
 You have to explicitly tell Miniaudio to use the custom decoders:
