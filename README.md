@@ -1,5 +1,10 @@
-The IBXM extension adds decoding support for `.mod` (ProTracker), `.xm` (FastTracker 2), and `.s3m` (Scream Tracker 3) files.
-The `it2play` extension adds decoding support for `.it` (Impulse Tracker) and `.s3m` files. Since both libraries support S3M,
+This repository adds decoding support in [Miniaudio](https://github.com/mackron/miniaudio) for the following music formats:
+- `.mod` (ProTracker)
+- `.xm` (FastTracker 2)
+- `.s3m` (Scream Tracker 3)
+- `.it` (Impulse Tracker)
+
+The IBXM extension adds `.mod`, `.xm`, and `.s3m` support. The `it2play` extension adds `.it` and `.s3m` support. Since both support S3M,
 whichever one you list first in your list of decoders (see usage section) should take priority.
 
 # Compiling
