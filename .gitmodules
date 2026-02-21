@@ -1,0 +1,6 @@
+[submodule "lib/it2play"]
+	path = lib/it2play
+	url = https://github.com/torphedo/it2play
+[submodule "lib/micromod"]
+	path = lib/micromod
+	url = https://github.com/martincameron/micromod
