@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h> /* For memset(). */
 #include <sys/stat.h>
+#include <malloc.h>
 
 static ma_result ma_it2_ds_read(ma_data_source* pDataSource, void* pFramesOut, ma_uint64 frameCount, ma_uint64* pFramesRead)
 {
@@ -127,18 +128,40 @@ static ma_result ma_it2_ds_get_length(ma_data_source* pDataSource, ma_uint64* pL
         return MA_INVALID_ARGS;
     }
 
-    // Taken from it2play.c
-    const double dSamplesPerTick = (Driver.MixFrequency * 2.5) / Song.Tempo;
-    const ma_uint32 numOrders = getOrderEnd(0);
-
-    // From https://fileformats.fandom.com/wiki/Impulse_tracker#Patterns
-    const ma_uint32 maxRowsPerPattern = 200;
-
-    // This calculation is wrong but I can't figure out a better one. - torph
-    const ma_int64 length = dSamplesPerTick * Song.CurrentSpeed * numOrders * maxRowsPerPattern;
-    if (length < 0) {
-        return MA_ERROR;
+    // Setup state to detect looping
+    ma_uint8 orders_visited[MAX_ORDERS] = {0};
+    ma_uint8** patterns_visited = calloc(Song.Header.PatNum, sizeof(*patterns_visited));
+    for (ma_uint32 i = 0; i < Song.Header.PatNum; i++) {
+        patterns_visited[i] = calloc(MAX_ROWS, sizeof(*patterns_visited));
     }
+    const ma_uint32 TICKS_PER_ROW = 5;
+
+    Music_PlaySong(0);
+    ma_uint64 length = 0;
+    while (true) {
+        if (patterns_visited[Song.CurrentPattern][Song.CurrentRow] > TICKS_PER_ROW && orders_visited[Song.CurrentOrder]) {
+            // This exact note has already been played by this order, we must be
+            // in a loop.
+            break;
+        }
+
+        const ma_uint32 SamplesPerTick = (Driver.MixFrequency * TICKS_PER_ROW) / (Song.Tempo * 2);
+        length += SamplesPerTick;
+        patterns_visited[Song.CurrentPattern][Song.ProcessRow]++;
+
+        const ma_uint16 order = Song.CurrentOrder;
+        Update();
+        if (order != Song.CurrentOrder) {
+            orders_visited[order] = 1; // Mark orders as visited when they change
+        }
+    }
+    Music_PlaySong(0);
+
+    for (ma_uint32 i = 0; i < Song.Header.PatNum; i++) {
+        free(patterns_visited[i]);
+    }
+    free(patterns_visited);
+
     *pLength = (ma_uint64)length;
     return MA_SUCCESS;
 }
