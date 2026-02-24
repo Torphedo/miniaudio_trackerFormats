@@ -212,7 +212,7 @@ ma_result ma_it2_onInitMemory(void* pUserData, const void* pData, size_t dataSiz
      */
 
     /* We provide a mix buffer size of 0 since we use a no-op speaker driver. */
-    if (!Music_Init(pIT2->sample_rate, 0,  DRIVER_HQ)) {
+    if (!Music_Init(pIT2->sample_rate, 0,  DRIVER_SB16)) {
         return MA_ERROR;
     }
 
