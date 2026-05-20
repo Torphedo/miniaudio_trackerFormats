@@ -9,6 +9,8 @@ include_directories(
     lib/it2play
 )
 
+set(it2play_SOURCE_DIR ${ma_tracker_formats_SOURCE_DIR}/lib/it2play)
+
 # Bypass normal it2play build script because it tries to find and link with SDL
 file(GLOB it2play_SRC
     "${it2play_SOURCE_DIR}/loaders/mmcmp/*.c"
