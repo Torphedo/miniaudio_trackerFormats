@@ -275,11 +275,11 @@ ma_result ma_decoding_it2_onInitFile(void* pUserData, const char* pFilePath, con
     fread(data, size, 1, f);
     fclose(f);
 
-    ma_decoding_it2_onInitMemory(pUserData, data, size, pConfig, pAllocationCallbacks, ppBackend);
+    ma_result res = ma_decoding_it2_onInitMemory(pUserData, data, size, pConfig, pAllocationCallbacks, ppBackend);
 
     ma_free(data, pAllocationCallbacks);
 
-    return MA_SUCCESS;
+    return res;
 }
 
 static void ma_decoding_backend_uninit__it2(void* pUserData, ma_data_source* pBackend, const ma_allocation_callbacks* pAllocationCallbacks)
