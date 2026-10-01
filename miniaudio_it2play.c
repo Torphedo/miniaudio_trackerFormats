@@ -3,9 +3,9 @@
 #include <it_music.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h> /* For memset(). */
 #include <sys/stat.h>
-#include <malloc.h>
 
 static ma_result ma_it2_ds_read(ma_data_source* pDataSource, void* pFramesOut, ma_uint64 frameCount, ma_uint64* pFramesRead)
 {
